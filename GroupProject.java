@@ -24,7 +24,7 @@ public class GroupProject extends Application{
 
         
         
-        Label titleLabel = new Label("Welcome to the Professional Portal");
+        Label titleLabel = new Label("Welcome to the Medical Portal");
         titleLabel.setFont(Font.font(16));
         titleLabel.setTextFill(Color.BLACK);
         
@@ -63,7 +63,7 @@ public class GroupProject extends Application{
         Scene scene = new Scene(vbox, 800, 400, Color.WHITE);
 
         // Set the stage title
-        primaryStage.setTitle("Vertical Buttons");
+        primaryStage.setTitle("Medical Portal");
 
         button1.setOnAction(e -> {
         	NurseLogin nurseView = new NurseLogin(); // Create an instance of NurseView

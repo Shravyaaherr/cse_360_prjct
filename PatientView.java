@@ -20,6 +20,9 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.TextArea;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -32,7 +35,11 @@ public class PatientView extends Application {
     private TextField InsuranceIdField;
     private TextField addressField;
     private TextField pharmacyField;
+    private String username;
     
+    public void setUsername(String username) {
+        this.username = username;
+    }
     
     public void start(Stage primaryStage) {
         // Create labels and text fields
@@ -97,11 +104,14 @@ public class PatientView extends Application {
         gridPane.add(new Label("Pharmacy Information:"), 0, 8);
         gridPane.add(pharmacyField, 1, 8);
         gridPane.setBackground(bg);
+        fillNamesFromFile("nurseview_data_" + username + ".txt");
+        
      // Create a Save button
         Button saveButton = new Button("Save");
         
         saveButton.setOnAction(e -> {
-            savePatientInfo();
+        	 // Assuming you have a method to retrieve the patient ID (username)
+        	   savePatientInfo(username);
             GroupProject Main = new GroupProject();
             Main.start(primaryStage);
         });
@@ -123,7 +133,8 @@ public class PatientView extends Application {
         });
         Button contactUs = new Button("Contact Us");
         contactUs.setOnAction(e -> {
-            
+            PatientChat PatientChat = new PatientChat();
+            PatientChat.start(primaryStage);
         });
         Label sentenceLabel = new Label("Looking for previous visits?");
         Label sentenceLabel2 = new Label("Have any inquiries or health related questions?");
@@ -149,8 +160,35 @@ public class PatientView extends Application {
         
  
     }
+    private void fillNamesFromFile(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Check if the line contains the name
+                if (line.startsWith("Name:")) {
+                    // Split the line by spaces
+                    String[] parts = line.split("\\s+");
+                    if (parts.length >= 2) { // Ensure there are at least two parts (first name and last name)
+                        // Extract the first and last name
+                        String firstName = parts[1];
+                        String lastName = parts[parts.length - 1];
+                        // Set the first and last name fields
+                        patientfirstNameField.setText(firstName);
+                        patientlastNameField.setText(lastName);
+                    } else if (parts.length == 1) { // If only one part, set it as the first name
+                        patientfirstNameField.setText(parts[0]);
+                    }
+                    // Break the loop after finding the name
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     
-    private String savePatientInfo() {
+    private void savePatientInfo(String patientID) {
         // Store patient information in a string
         String patientInfo = 
                 "First Name: " + patientfirstNameField.getText() + "\n"
@@ -159,32 +197,23 @@ public class PatientView extends Application {
                 + "Phone Number: " + phoneNumberField.getText() + "\n"
                 + "Insurance ID: " + InsuranceIdField.getText() + "\n"
                 + "Address: " + addressField.getText() + "\n"
-                + "Pharmacy Location" + pharmacyField.getText();
+                + "Pharmacy Location: " + pharmacyField.getText();
 
 
         // Perform saving operation 
-        String patientID = generatePatientID();
         System.out.println("Saving patient information:");
         System.out.println(patientInfo);
-        System.out.println("Generated Patient ID: " + patientID);
+        System.out.println("Patient ID: " + patientID);
 
-        String fileName = patientID + "_PatientInfo.txt";
+        String fileName = "patient_data_" + patientID + ".txt";
         System.out.println("Saving patient information to file: " + fileName);
         try (FileWriter writer = new FileWriter(fileName)) {
             writer.write(patientInfo);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return patientID;
     }
-    private String generatePatientID() {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
-            sb.append(random.nextInt(10));
-        }
-        return sb.toString();
-    }
+
 
     public static void main(String[] args) {
         launch(args);
