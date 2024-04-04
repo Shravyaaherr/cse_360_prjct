@@ -123,7 +123,8 @@ public class PatientSummary extends Application {
         
         Button contactUs = new Button("Contact Us");
         contactUs.setOnAction(e -> {
-            
+        	PatientChat PatientChat = new PatientChat();
+            PatientChat.start(primaryStage);
         });
         
         Label sentenceLabel2 = new Label("Have any inquiries or health related questions?");

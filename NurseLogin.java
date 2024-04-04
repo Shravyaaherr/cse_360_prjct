@@ -10,30 +10,33 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
-public class PatientLogin extends Application {
-
-    private TextField patientIDField;
-    private Stage primaryStage;
-    private String patientName;
+public class NurseLogin extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Patient Login");
+        primaryStage.setTitle("Nurse Login");
 
         // Create a GridPane for login components
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
+        
+        VBox vbox = new VBox(10);
+        vbox.setAlignment(Pos.CENTER);
+
+       
+        
         
         Image image = new Image("https://www.transparentpng.com/thumb/human/black-human-user-profile-png-icon-free-fsR5FT.png");
         ImageView imageView = new ImageView(image);
@@ -62,27 +65,25 @@ public class PatientLogin extends Application {
 
         // Login Button
         Button loginButton = new Button("Login");
-        GridPane.setConstraints(loginButton, 2, 3);
-        // Span 1 column
+        GridPane.setConstraints(loginButton, 1, 3); // Span 1 column
         loginButton.setMaxWidth(Double.MAX_VALUE); // Make the button fill the width
         loginButton.setOnAction(e -> {
             String username = usernameInput.getText();
             String password = passwordInput.getText();
 
-            // Check if the patient ID exists in the data source
-            boolean isValid = checkPatientID(username, password);
+            // Hardcoded login credentials for demonstration
+            String hardcodedUsername = "nurse";
+            String hardcodedPassword = "password";
 
-            if (isValid) {
+            if (username.equals(hardcodedUsername) && password.equals(hardcodedPassword)) {
                 // If login is successful, navigate to Nurse Portal
-                PatientView patient = new PatientView();
-                patient.setUsername(username);
-                patient.start(primaryStage);
+                NurseView nurseView = new NurseView();
+                nurseView.start(primaryStage);
             } else {
-                // If login fails, display an error message
-                System.out.println("No account found with this patient ID. Please try again.");
+                // If login fails, display an error message (you can modify this part as needed)
+                System.out.println("Invalid username or password. Please try again.");
             }
         });
-
         // Back Button
         Button backButton = new Button("Back");
         GridPane.setConstraints(backButton, 0, 3); // Span 1 column
@@ -94,7 +95,7 @@ public class PatientLogin extends Application {
             primaryStage.close();
             home2.start(primaryStage);
         });
-
+        
         // Add components to the grid
         grid.getChildren().addAll(usernameLabel, usernameInput, passwordLabel, passwordInput, loginButton, backButton);
 
@@ -108,15 +109,6 @@ public class PatientLogin extends Application {
 
         // Show the stage
         primaryStage.show();
-    }
-
-    private boolean checkPatientID(String username, String password) {
-        // Construct the file name based on the username (patient ID)
-        String fileName = "nurseview_data_" + username + ".txt";
-
-        // Check if the file exists
-        File file = new File(fileName);
-        return file.exists();
     }
 
     public static void main(String[] args) {
